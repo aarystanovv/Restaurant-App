@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -19,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -29,6 +32,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.final_project_android.model.Category
+
 class HomeFragment: Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +48,7 @@ class HomeFragment: Fragment() {
 
         return view
     }
-    }
+}
 
 @Composable
 fun MyApp() {
@@ -68,62 +72,139 @@ fun MyApp() {
             val category = backStackEntry.arguments?.getString("category")
             category?.let { selectedCategory ->
                 restaurantViewModel.loadRestaurants(selectedCategory)
-                RestaurantsScreen(category = selectedCategory, restaurantViewModel)
+                RestaurantsScreen(category = selectedCategory, restaurantViewModel) { selectedRestaurant ->
+                    navController.navigate("restaurantDetail/${selectedRestaurant.name}")
+                }
+            }
+        }
+        composable(
+            "restaurantDetail/{restaurantName}",
+            arguments = listOf(navArgument("restaurantName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val restaurantName = backStackEntry.arguments?.getString("restaurantName")
+            restaurantName?.let {
+                RestaurantDetailScreen(restaurantName, restaurantViewModel)
             }
         }
     }
 }
-
 @Composable
-fun CategoriesScreen(categories: List<Category>, navigateToRestaurants: (String) -> Unit) {
+fun CategoriesScreen(
+    categories: List<Category>,
+    navigateToRestaurants: (String) -> Unit
+) {
     LazyColumn {
         items(categories) { category ->
             Button(
                 onClick = { navigateToRestaurants(category.title) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                elevation = ButtonDefaults.elevation(
+                    defaultElevation = 8.dp,
+                    pressedElevation = 16.dp
+                )
             ) {
-                Text(text = category.title)
+                Text(
+                    text = category.title,
+                    style = MaterialTheme.typography.button
+                )
             }
         }
     }
 }
 
 @Composable
-fun RestaurantsScreen(category: String, viewModel: RestaurantViewModel) {
+fun RestaurantsScreen(
+    category: String,
+    viewModel: RestaurantViewModel,
+    onSelectRestaurant: (PlacesApiService.Place) -> Unit
+) {
     val restaurants by viewModel.restaurants.observeAsState(emptyList())
     val error by viewModel.error.observeAsState("")
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(16.dp)
     ) {
         Text(
             text = "Restaurants in $category",
-            style = MaterialTheme.typography.h5
+            style = MaterialTheme.typography.h5,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             items(restaurants) { restaurant ->
                 Card(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
+                        .clickable { onSelectRestaurant(restaurant) }
+                        .fillMaxWidth(),
+                    elevation = 4.dp
                 ) {
-                    Text(
-                        text = restaurant.name,
+                    Column(
                         modifier = Modifier.padding(16.dp)
-                    )
+                    ) {
+                        Text(
+                            text = restaurant.name,
+                            style = MaterialTheme.typography.body1,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            text = restaurant.address,
+                            style = MaterialTheme.typography.caption
+                        )
+                    }
                 }
             }
         }
 
         if (error.isNotEmpty()) {
-            Text(text = error)
+            Text(
+                text = error,
+                style = MaterialTheme.typography.body2,
+                color = Color.Red,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
 
+@Composable
+fun RestaurantDetailScreen(
+    restaurantName: String,
+    viewModel: RestaurantViewModel
+) {
+    val restaurants by viewModel.restaurants.observeAsState(emptyList())
+    val restaurant = restaurants.find { it.name == restaurantName }
 
+    if (restaurant != null) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = restaurant.name,
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                text = restaurant.address,
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                text = "Rating: ${restaurant.rating}",
+                style = MaterialTheme.typography.caption
+            )
+        }
+    } else {
+        Text(
+            text = "Restaurant not found",
+            style = MaterialTheme.typography.body1,
+            color = Color.Red,
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
