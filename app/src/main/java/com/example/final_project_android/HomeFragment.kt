@@ -61,9 +61,12 @@ fun MyApp() {
 
     NavHost(navController, startDestination = "categories") {
         composable("categories") {
-            CategoriesScreen(categories) { selectedCategory ->
-                navController.navigate("restaurants/$selectedCategory")
-            }
+            CategoriesScreen(
+                categories = categories,
+                navigateToRestaurants = { selectedCategory ->
+                    navController.navigate("restaurants/$selectedCategory")
+                }
+            )
         }
         composable(
             "restaurants/{category}",
@@ -72,7 +75,10 @@ fun MyApp() {
             val category = backStackEntry.arguments?.getString("category")
             category?.let { selectedCategory ->
                 restaurantViewModel.loadRestaurants(selectedCategory)
-                RestaurantsScreen(category = selectedCategory, restaurantViewModel) { selectedRestaurant ->
+                RestaurantsScreen(
+                    category = selectedCategory,
+                    viewModel = restaurantViewModel
+                ) { selectedRestaurant ->
                     navController.navigate("restaurantDetail/${selectedRestaurant.name}")
                 }
             }
@@ -83,7 +89,11 @@ fun MyApp() {
         ) { backStackEntry ->
             val restaurantName = backStackEntry.arguments?.getString("restaurantName")
             restaurantName?.let {
-                RestaurantDetailScreen(restaurantName, restaurantViewModel)
+                RestaurantDetailScreen(
+                    restaurantName = it,
+                    viewModel = restaurantViewModel,
+                    onBackPress = { navController.popBackStack() }
+                )
             }
         }
     }
@@ -175,7 +185,8 @@ fun RestaurantsScreen(
 @Composable
 fun RestaurantDetailScreen(
     restaurantName: String,
-    viewModel: RestaurantViewModel
+    viewModel: RestaurantViewModel,
+    onBackPress: () -> Unit
 ) {
     val restaurants by viewModel.restaurants.observeAsState(emptyList())
     val restaurant = restaurants.find { it.name == restaurantName }
@@ -196,7 +207,33 @@ fun RestaurantDetailScreen(
             )
             Text(
                 text = "Rating: ${restaurant.rating}",
-                style = MaterialTheme.typography.caption
+                style = MaterialTheme.typography.body1
+            )
+
+            Text(
+                text = "Open Now: ${if (restaurant.openingHours?.openNow == true) "Yes" else "No"}",
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+
+            Text(
+                text = "Price Level: ${restaurant.priceLevel ?: "N/A"}",
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                text = "Total User Ratings: ${restaurant.userRatingsTotal}",
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+
+            Text(
+                text = "Back",
+                style = MaterialTheme.typography.body2,
+                color = Color.Blue,
+                modifier = Modifier
+                    .clickable(onClick = onBackPress)
+                    .padding(top = 16.dp)
             )
         }
     } else {

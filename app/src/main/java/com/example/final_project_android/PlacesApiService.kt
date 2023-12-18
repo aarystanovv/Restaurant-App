@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+
 class PlacesApiClient {
     private val apiKey = "AIzaSyDqOB2ikBicjeHk9ezHPjQ8IqaBhIL42Tg"
 
@@ -27,7 +28,7 @@ class PlacesApiClient {
             "restaurant",
             category,
             apiKey,
-            "name,vicinity,description,rating"
+            "name,business_status,opening_hours,price_level,rating,user_ratings_total,vicinity"
         )
 
         call.enqueue(object : Callback<PlacesApiService.PlacesResponse> {
@@ -56,10 +57,21 @@ class PlacesApiClient {
     }
 
     interface PlacesCallback {
-        fun onPlacesFetched(places: List<PlacesApiService.Place>)
+        fun onPlacesFetched(restaurants: List<PlacesApiService.Place>)
         fun onError(errorMessage: String)
     }
 }
+
+data class Restaurant(
+    val name: String,
+    val businessStatus: String,
+    val openNow: Boolean,
+    val priceLevel: String,
+    val rating: Double,
+    val totalUserRatings: Int,
+    val distance: Int,
+    val address: String
+)
 
 interface PlacesApiService {
     @GET("nearbysearch/json")
@@ -81,13 +93,27 @@ interface PlacesApiService {
         @SerializedName("name")
         val name: String,
 
-        @SerializedName("vicinity")
-        val address: String,
+        @SerializedName("business_status")
+        val businessStatus: String?,
 
-        @SerializedName("description")
-        val description: String?,
+        @SerializedName("opening_hours")
+        val openingHours: OpeningHours?,
+
+        @SerializedName("price_level")
+        val priceLevel: String?,
 
         @SerializedName("rating")
-        val rating: Double?
+        val rating: Double?,
+
+        @SerializedName("user_ratings_total")
+        val userRatingsTotal: Int?,
+
+        @SerializedName("vicinity")
+        val address: String
+    )
+
+    data class OpeningHours(
+        @SerializedName("open_now")
+        val openNow: Boolean?
     )
 }
