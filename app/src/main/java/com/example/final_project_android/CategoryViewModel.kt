@@ -18,6 +18,8 @@ class CategoryViewModel : ViewModel() {
             Category("Italian", R.drawable.ic_android_black_24dp),
             Category("Chinese", R.drawable.ic_android_black_24dp),
             Category("Mexican", R.drawable.ic_android_black_24dp),
-        )
+            Category("Kazakh", R.drawable.ic_android_black_24dp),
+
+            )
     }
 }

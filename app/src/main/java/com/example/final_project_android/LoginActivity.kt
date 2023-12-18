@@ -1,12 +1,12 @@
 package com.example.final_project_android
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -48,7 +48,6 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(emailInput, passwordInput)
             .addOnCompleteListener(this) {task ->
                 if (task.isSuccessful){
-                    //sign in success, move to the next activity
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
 

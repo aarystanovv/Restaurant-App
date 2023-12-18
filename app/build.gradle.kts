@@ -33,14 +33,26 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+
     }
 
     buildFeatures {
         viewBinding = true
-    }
+        compose = true
+        }
+
+        composeOptions {
+            kotlinCompilerExtensionVersion = "1.5.2"
+        }
 }
 
 dependencies {
+
+    implementation ("androidx.compose.ui:ui:1.0.4")
+    implementation ("androidx.compose.material:material:1.0.4")
+    implementation ("androidx.compose.ui:ui-tooling-preview:1.0.4")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.0.4")
     implementation("androidx.compose.foundation:foundation:1.0.5")
     implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.21.0-beta")

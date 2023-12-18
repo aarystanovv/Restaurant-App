@@ -1,5 +1,6 @@
 package com.example.final_project_android
 
+import android.util.Log
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,7 +23,8 @@ class PlacesApiClient {
 
         val call = service.getNearbyPlacesByCategory(
             "43.2567,76.9286",
-            500,
+            5500,
+            "restaurant",
             category,
             apiKey,
             "name,vicinity,description,rating"
@@ -37,6 +39,7 @@ class PlacesApiClient {
                     val placesResponse = response.body()
                     placesResponse?.let {
                         val places = it.places
+                        Log.e("Success", places.toString())
                         callback.onPlacesFetched(places)
                     }
                 } else {
@@ -64,6 +67,7 @@ interface PlacesApiService {
         @Query("location") location: String,
         @Query("radius") radius: Int,
         @Query("type") type: String,
+        @Query("keyword") keyword: String,
         @Query("key") apiKey: String,
         @Query("fields") fields: String
     ): Call<PlacesResponse>
