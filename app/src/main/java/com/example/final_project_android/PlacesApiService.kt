@@ -62,16 +62,8 @@ class PlacesApiClient {
     }
 }
 
-data class Restaurant(
-    val name: String,
-    val businessStatus: String,
-    val openNow: Boolean,
-    val priceLevel: String,
-    val rating: Double,
-    val totalUserRatings: Int,
-    val distance: Int,
-    val address: String
-)
+
+
 
 interface PlacesApiService {
     @GET("nearbysearch/json")
@@ -100,7 +92,7 @@ interface PlacesApiService {
         val openingHours: OpeningHours?,
 
         @SerializedName("price_level")
-        val priceLevel: String?,
+        val priceLevel: Int,
 
         @SerializedName("rating")
         val rating: Double?,
@@ -109,7 +101,9 @@ interface PlacesApiService {
         val userRatingsTotal: Int?,
 
         @SerializedName("vicinity")
-        val address: String
+        val address: String,
+
+        val isFavourite: Boolean = false
     )
 
     data class OpeningHours(

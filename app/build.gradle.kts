@@ -61,8 +61,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
     implementation("androidx.compose.material3:material3:1.0.0-alpha03")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.navigation:navigation-compose:2.6.0")
     implementation("com.google.accompanist:accompanist-pager:0.21.1-beta")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.20.0")
@@ -70,6 +69,10 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("com.google.firebase:firebase-auth-ktx:22.3.0")
+    implementation("androidx.core:core-ktx:+")
+
     //implementation("com.google.firebase:firebase-auth:22.3.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -81,4 +84,21 @@ dependencies {
     // Add the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-auth")
+
+    // room
+    implementation("androidx.room:room-common:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+
+    // fragment extensions
+    implementation("androidx.fragment:fragment-ktx:1.3.6")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
+
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.fragment:fragment-ktx:1.3.6")
+    implementation("androidx.compose.runtime:runtime-livedata:1.1.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
+
+
 }

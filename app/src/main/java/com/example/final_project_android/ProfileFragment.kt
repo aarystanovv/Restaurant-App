@@ -9,14 +9,14 @@ import androidx.fragment.app.Fragment
 import com.example.final_project_android.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 
-class ProfileFragment: Fragment(R.layout.fragment_profile) {
+class ProfileFragment: Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
     private lateinit var user: FirebaseAuth
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
